@@ -20,9 +20,10 @@ class Block:
     def mine(self,difficulty):
         # here we are validating proof of work by comparing hash to a set of zeros
         x="0"*difficulty
-        while(self.currenthash[0:difficulty]!=x):
+        current_hash=self.currenthash
+        while(current_hash[0:difficulty]!=x):
             self.temp+=1
-            self.currenthash=self.calculatehash()
+            current_hash=self.calculatehash()
 
 class Blockchain:
     def __init__(self,data,difficulty):
@@ -44,10 +45,13 @@ class Blockchain:
         for i in range(1,len(self.chain)):
             current=self.chain[i]
             previous=self.chain[i-1]
+            x=current.temp
+            current.temp=0  #changing the temp to 0 just to validate that currently hash is same as when the block was created because temp value is changed while mining
             if(current.previoushash!=previous.currenthash):
                 return False
             if(current.currenthash!=current.calculatehash()):
                 return False
+        current.temp=x #changing back the temp to its mined value, if some one wants to know how many times loop ran(computation power)
         return True                     
 
 #increase the difficulty as per requirement-----------
@@ -67,6 +71,7 @@ for i in range(0,len(mychain.chain)):
     print(mychain.chain[i].data,end=" | ") 
     print(mychain.chain[i].currenthash,end=" | ")
     print(mychain.chain[i].previoushash,end=" | ")
+    print(mychain.chain[i].temp,end=" | ")
     print("--------------------------------------------------------")
  #  ----------chceck validity-------
 print()
