@@ -22,9 +22,10 @@ class Block:
         return  hashlib.sha256(string.encode()).hexdigest()
     def mine(self,difficulty):
         x="0"*difficulty
-        while(self.currenthash[0:difficulty]!=x):
+        current_hash=self.currenthash
+        while(current_hash[0:difficulty]!=x):
             self.count+=1
-            self.currenthash=self.calculatehash()
+            self.current_hash=self.calculatehash()
 
 class Blockchain:
     def __init__(self,GenesisTransaction,difficulty):
@@ -66,10 +67,13 @@ class Blockchain:
         for i in range(1,len(self.chain)):
             current=self.chain[i]
             previous=self.chain[i-1]
+            x=current.count #changing the temp to 0 just to validate that currently hash is same as when the block was created because temp value is changed while mining
+            current.count=0
             if(current.previoushash!=previous.currenthash):
                 return False
             if(current.currenthash!=current.calculatehash()):
                 return False
+        current.count=x #changing back the temp to its mined value, if some one wants to know how many times loop ran(computation power)
         return True     
 #   Genesis block with new Genesis transaction
 GenesisTransactions=[Transaction(None,"Genesis",2000)]                
